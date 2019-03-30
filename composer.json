@@ -1,0 +1,26 @@
+{
+    "name": "yannoff/y-a-m-l",
+    "description": "Y.A.M.L : Yaml Abstraction Model Layer",
+    "homepage": "https://github.com/yannoff/y-a-m-l",
+    "type": "php-library",
+    "require": {
+        "ext-json": "*",
+        "symfony/yaml": "^3.4",
+        "symfony/console": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Yannoff\\Component\\YAML\\": "src"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yannoff",
+            "homepage": "https://github.com/yannoff"
+        }
+    ],
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.4"
+    }
+}

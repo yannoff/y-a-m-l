@@ -69,12 +69,12 @@ class Line
                     $message = sprintf('Method "%s" expected 1 argument, got %s: %s', $name, $argc, json_encode($args));
                     throw new \RuntimeException($message);
                 }
-                $this->{$prop} = end($args);
-                return $this;
+
+                return $this->set($prop, end($args));
                 break;
 
             case 'get':
-                return $this->{$prop};
+                return $this->get($prop);
                 break;
 
             default:
@@ -125,5 +125,68 @@ class Line
     {
         $this->ypath = $YPath;
         return $this;
+    }
+
+    /**
+     * Internal setter invoked for every setXXX() call
+     * String values are normalized before being stored
+     *
+     * @param string $name  The property we want to set
+     * @param mixed  $value The raw (unescaped) value
+     *
+     * @return self
+     */
+    protected function set($name, $value)
+    {
+        if (is_string($value)) {
+            $value = $this->escape($value);
+        }
+
+        $this->{$name} = $value;
+
+        return $this;
+    }
+
+    /**
+     * Internal getter invoked for every getXXX() call
+     * String values are unescaped before being returned
+     *
+     * @param string $name The property we want to fetch
+     *
+     * @return mixed The unescaped value of the property
+     */
+    protected function get($name)
+    {
+        $value = $this->{$name};
+
+        if (!is_string($value)) {
+            return $value;
+        }
+
+        return $this->unescape($value);
+    }
+
+    /**
+     * Replace hashtag characters by their UTF-8 escaped equivalent
+     *
+     * @param mixed $raw
+     *
+     * @return string
+     */
+    protected function escape($raw)
+    {
+        return str_replace('#', '\u0023', $raw);
+    }
+
+    /**
+     * Replace hashtag UTF-8 sequences by the plain text characters
+     *
+     * @param string $raw
+     *
+     * @return string
+     */
+    protected function unescape($raw)
+    {
+        return str_replace('\u0023', '#', $raw);
     }
 }

@@ -105,28 +105,4 @@ class Comment extends DataLine
     {
         return (self::TYPE_COMMENT_FULL === $this->type);
     }
-
-    /**
-     * Replace hashtag characters by their UTF-8 escaped equivalent
-     *
-     * @param string $raw
-     *
-     * @return string
-     */
-    protected function escape($raw)
-    {
-        return str_replace('#', '\u0023', $raw);
-    }
-
-    /**
-     * Replace hashtag UTF-8 sequences by the plain text characters
-     *
-     * @param string $raw
-     *
-     * @return string
-     */
-    protected function unescape($raw)
-    {
-        return str_replace('\u0023', '#', $raw);
-    }
 }

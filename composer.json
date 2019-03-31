@@ -4,9 +4,7 @@
     "homepage": "https://github.com/yannoff/y-a-m-l",
     "type": "php-library",
     "require": {
-        "ext-json": "*",
-        "symfony/yaml": "^3.4",
-        "symfony/console": "^3.4"
+        "ext-json": "*"
     },
     "autoload": {
         "psr-4": {

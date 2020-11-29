@@ -15,8 +15,8 @@ namespace Yannoff\Component\YAML;
  *
  * @method string  getComment()
  * @method Comment setComment(string $comment)
- * @method Ypath   getContext()
- * @method Comment setContext(Ypath $ypath)
+ * @method DataLine getContextLine()
+ * @method Comment  setContextLine(DataLine $line)
  * @method string  getType()
  * @method Comment setType(string $type)
  */
@@ -43,11 +43,11 @@ class Comment extends DataLine
     protected $comment;
 
     /**
-     * The comment context: YPath to the sibling (for full-line comments) or current line (for inline comments)
+     * The comment context: sibling (for full-line comments) or current Line (for inline comments)
      *
-     * @var YPath
+     * @var DataLine
      */
-    protected $context;
+    protected $contextLine;
 
     /**
      * The comment line type (inline/full/empty)
@@ -77,7 +77,8 @@ class Comment extends DataLine
 
 
         if (empty($data)) {
-            $this->setType(self::TYPE_COMMENT_FULL);
+            $type = preg_match('/^\s*$/', $raw) ? self::TYPE_COMMENT_EMPTY : self::TYPE_COMMENT_FULL;
+            $this->setType($type);
             return;
         }
 

@@ -82,23 +82,29 @@ class Contents
         $paths = $this->index;
 
         foreach ($this->rows as $no => $line) {
-            // 2 types of comments:
+            // 3 types of comments:
             // FULL   => the line begins with hashtag
             // INLINE => 1 space between line contents and the hashtag
-            if (! preg_match('/(^#| #)/', $line)) {
+            // EMPTY  => only whitespaces, if any
+            if (! preg_match('/(^#| #|^\s*$)/', $line)) {
                 continue;
             }
 
             $comment = new Comment($no, $line);
             switch ($comment->getType()) {
                 case Comment::TYPE_COMMENT_FULL:
-                    $comment->setContext($paths[$no+1]);
+                case Comment::TYPE_COMMENT_EMPTY:
+                    $lineNo = $no + 1;
                     break;
 
                 case Comment::TYPE_COMMENT_INLINE:
-                    $comment->setContext($paths[$no]);
+                    $lineNo = $no;
                     break;
             }
+            $contextPath = $paths[$lineNo];
+            $contextLine = $this->getLine($lineNo);
+            $contextLine->setYPath($contextPath);
+            $comment->setContextLine($contextLine);
             $comments[$no] = $comment;
         }
 
@@ -120,7 +126,7 @@ class Contents
                 continue;
             }
 
-            $path = $comment->getContext();
+            $path = $comment->getContextLine()->getYPath();
             $line = $this->getLineByYPath($path);
             if ($line) {
                 $line->append(' #' . $comment->getComment());
@@ -132,8 +138,13 @@ class Contents
         // Then insert each full-line comments
         // Iterate DOWN over the comments list: prepare multi-line comments block handling
         foreach (array_reverse($comments, true) as $comment) {
-            $path = $comment->getContext();
-            $no = $this->getLineNoByYPath($path);
+            $contextLine = $comment->getContextLine();
+            if ($contextLine->isComment() && ! $contextLine->isInline()) {
+                $no = $this->getLineNoByRawContents((string) $contextLine);
+            } else {
+                $path = $contextLine->getYPath();
+                $no = $this->getLineNoByYPath($path);
+            }
             $this->insertRow($no, (string) $comment);
         }
 
@@ -277,11 +288,12 @@ class Contents
         $key = $line->isSequence() ? $this->getIndex($line) : $line->getKey();
         $ypath = $this->getParentYPath($line);
         $ypath->push($key);
+
         return $ypath;
     }
 
     /**
-     * Build a Line object from the given row
+     * Build a Line or Comment object from the given row
      *
      * @param int $no The row line number
      *
@@ -289,9 +301,10 @@ class Contents
      */
     protected function getLine($no)
     {
-        $line = new DataLine($no, $this->rows[$no]);
-        //echo "--- getLine($no)\n";
-        return $line;
+        $line = $this->rows[$no];
+        $type = preg_match('/(^#| #|^\s*$)/', $line) ? Comment::class : DataLine::class;
+
+        return new $type($no, $line);
     }
 
     /**

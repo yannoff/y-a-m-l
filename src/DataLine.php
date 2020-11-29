@@ -102,10 +102,20 @@ class DataLine extends Line
      */
     public function getIndent()
     {
-        $regexp = sprintf('/^((%s)*)[a-zA-z\-#]/', self::TAB);
+        $regexp = sprintf('/^((%s)*)([a-zA-z\-#]*)/', self::TAB);
         preg_match($regexp, $this->raw, $tabs);
         $indent = substr_count($tabs[0], self::TAB);
         return $indent;
+    }
+
+    /**
+     * Return true if the line is an instance of Comment
+     *
+     * @return bool
+     */
+    public function isComment()
+    {
+        return ($this instanceof Comment);
     }
 
     /**

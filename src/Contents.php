@@ -29,6 +29,13 @@ class Contents
     protected $index = [];
 
     /**
+     * Store the original file-ending char (namely a LF) if found in contents
+     *
+     * @var string
+     */
+    protected $ending = '';
+
+    /**
      * Contents constructor.
      * Load contents either from the given filepath or the raw content
      *
@@ -39,9 +46,11 @@ class Contents
     {
         if ($file) {
             $contents = file_get_contents($file);
-            // Fix: avoid creation of an empty line at the end of the row stack
-            // TODO Detect if a new line is found at the end of the file
-            // if YES, then restore it at some point
+            // Store file-ending blank line, if appropriate
+            if (substr($contents, -1) === "\n") {
+                $this->ending = "\n";
+            }
+            // Now contents can be trimmed safely
             $contents = trim($contents, " \n\t");
             $lines = explode("\n", $contents);
         }
@@ -57,7 +66,8 @@ class Contents
     public function __toString()
     {
         $contents = implode("\n", $this->getRows());
-        return $contents;
+
+        return $contents . $this->ending;
     }
 
     /**

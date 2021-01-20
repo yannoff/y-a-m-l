@@ -7,6 +7,19 @@
 
 namespace Yannoff\Component\YAML;
 
+use function array_reverse;
+use function array_search;
+use function count;
+use function explode;
+use function file_get_contents;
+use function implode;
+use function preg_match;
+use function sprintf;
+use function strpos;
+use function str_repeat;
+use function substr;
+use function trim;
+
 /**
  * Class Contents
  *

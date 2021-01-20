@@ -7,6 +7,15 @@
 
 namespace Yannoff\Component\YAML;
 
+use function array_shift;
+use function explode;
+use function implode;
+use function preg_match;
+use function preg_replace;
+use function sprintf;
+use function substr_count;
+use function trim;
+
 /**
  * Class DataLine
  * Object representing a YAML line

@@ -7,6 +7,15 @@
 
 namespace Yannoff\Component\YAML;
 
+use function count;
+use function end;
+use function is_string;
+use function json_encode;
+use function lcfirst;
+use function sprintf;
+use function str_replace;
+use function substr;
+
 /**
  * Class Line
  * Super class for YAML lines: DataLine & Comment

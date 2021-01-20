@@ -7,6 +7,12 @@
 
 namespace Yannoff\Component\YAML;
 
+use function array_shift;
+use function explode;
+use function implode;
+use function preg_match;
+use function trim;
+
 /**
  * Class Comment
  * Object representing a YAML comment line

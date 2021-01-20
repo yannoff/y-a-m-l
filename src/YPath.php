@@ -7,6 +7,8 @@
 
 namespace Yannoff\Component\YAML;
 
+use function implode;
+
 /**
  * Class YPath
  * YPath object representation

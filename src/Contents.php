@@ -270,6 +270,13 @@ class Contents
             $upperLine = $this->getLine($i);
             $upperIndent = $upperLine->getIndent();
             $i--;
+
+            // Don't mistakenly interpret comments as parent line in the YPath
+            // @see https://github.com/yannoff/y-a-m-l/issues/7
+            if ($upperLine->isComment()) {
+                continue;
+            }
+
             if ($upperIndent < $pos) {
                 $line = $upperLine;
                 break;
